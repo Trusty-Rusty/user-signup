@@ -15,10 +15,49 @@
 # limitations under the License.
 #
 import webapp2
+import cgi
 
+#html biolerplate for top of page
+header = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Signup</title>
+    <style type="text/css">
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Signup</h1>
+"""
+
+generic_form = """
+<form action='add-user' method='post'>
+    <label>Username: <input type='text' name='username'/></label>
+    <br>
+    <label>Password: <input type='text' name='password'/></label>
+    <br>
+    <label>Confrim Password: <input type='text' name='conf-password'/></label>
+    <br>
+    <label>Email (optional): <input type='text' name='email'/></label>
+    <br>
+    <input type="submit" value="Submit"/>
+</form>
+"""
+
+#html biolerplate for bottom of page
+footer = """
+</body>
+</html>
+"""
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        """Handles requeststs to main (/) page"""
+        main_content = generic_form
+        content = (header + main_content + footer)
+        self.response.write(content) #print the content to the page
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler)
