@@ -17,20 +17,20 @@ header = """
 <body>
     <h1>User Signup</h1>
 """
-def generic_form(username, password, verify, email):
+def generic_form(username, password, verify, email, error1, error2):
     form = """
     <form action='/' method='post'>
         <label>Username: <input type='text' name='username' value='{0}'/></label>
-        <br>
-        <label>Password: <input type='text' name='password' value='{1}'/></label>
-        <br>
-        <label>Confrim Password: <input type='text' name='verify' value='{2}'/></label>
+        <p class=error>{4}</p>
+        <label>Password: <input type='password' name='password' value='{1}'/></label>
+        <p class=error>{5}</p>
+        <label>Confrim Password: <input type='password' name='verify' value='{2}'/></label>
         <br>
         <label>Email (optional): <input type='text' name='email' value='{3}'/></label>
         <br>
         <input type="submit" value="Submit"/>
     </form>
-    """.format(username, password, verify, email)
+    """.format(username, password, verify, email, error1, error2)
     return(form)
 
 #html biolerplate for bottom of page
@@ -40,8 +40,17 @@ footer = """
 """
 #regular expressions for verifying inputs
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-PASSWORD_RE = (r"^.{3,20}$")
-EMAIL_RE =  (r"^[\S]+@[\S]+.[\S]+$")
+PASSWORD_RE = re.compile(r"^.{3,20}$")
+EMAIL_RE =  re.compile(r"^[\S]+@[\S]+.[\S]+$")
+
+def valid_username(username):   #validate username
+    return USER_RE.match(username)
+
+def valid_password(password):   #validate password
+    return PASSWORD_RE.match(password)
+
+def valid_email(email):   #validate email
+    return EMAIL_RE.match(email)
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -50,7 +59,9 @@ class MainHandler(webapp2.RequestHandler):
         password = ""
         verify = ""
         email = ""
-        main_content = generic_form(username, password, verify, email)
+        error1 = ""
+        error2 = ""
+        main_content = generic_form(username, password, verify, email, error1, error2)
         content = (header + main_content + footer)
         self.response.write(content) #print the content to the page
 
@@ -59,7 +70,19 @@ class MainHandler(webapp2.RequestHandler):
         password = self.request.get('password')
         verify = self.request.get('verify')
         email = self.request.get('email')
+        error1 = ""
+        error2 = ""
 
+        if not valid_username(username):
+            error1 = "Please enter a valid username."
+
+        if not valid_password(password):
+            error2 = "Please enter a valid password."
+
+
+        main_content = generic_form(username, password, verify, email, error1, error2)
+        content = (header + main_content + footer)
+        self.response.write(content) #print filled out form and any errors to the page
 
 
 class Welcome(webapp2.RequestHandler):
