@@ -17,7 +17,7 @@ header = """
 <body>
     <h1>User Signup</h1>
 """
-def generic_form(username, password, verify, email, error1, error2):
+def generic_form(username, password, verify, email, error1, error2, error3, error4):
     form = """
     <form action='/' method='post'>
         <label>Username: <input type='text' name='username' value='{0}'/></label>
@@ -25,12 +25,12 @@ def generic_form(username, password, verify, email, error1, error2):
         <label>Password: <input type='password' name='password' value='{1}'/></label>
         <p class=error>{5}</p>
         <label>Confrim Password: <input type='password' name='verify' value='{2}'/></label>
-        <br>
+        <p class=error>{6}</p>
         <label>Email (optional): <input type='text' name='email' value='{3}'/></label>
-        <br>
+        <p class=error>{7}</p>
         <input type="submit" value="Submit"/>
     </form>
-    """.format(username, password, verify, email, error1, error2)
+    """.format(username, password, verify, email, error1, error2, error3, error4)
     return(form)
 
 #html biolerplate for bottom of page
@@ -61,7 +61,10 @@ class MainHandler(webapp2.RequestHandler):
         email = ""
         error1 = ""
         error2 = ""
-        main_content = generic_form(username, password, verify, email, error1, error2)
+        error3 = ""
+        error4 = ""
+
+        main_content = generic_form(username, password, verify, email, error1, error2, error3, error4)
         content = (header + main_content + footer)
         self.response.write(content) #print the content to the page
 
@@ -72,6 +75,8 @@ class MainHandler(webapp2.RequestHandler):
         email = self.request.get('email')
         error1 = ""
         error2 = ""
+        error3 = ""
+        error4 = ""
 
         if not valid_username(username):
             error1 = "Please enter a valid username."
@@ -79,8 +84,13 @@ class MainHandler(webapp2.RequestHandler):
         if not valid_password(password):
             error2 = "Please enter a valid password."
 
+        if password != verify:
+            error3 = "Passwords do not match."
 
-        main_content = generic_form(username, password, verify, email, error1, error2)
+        if not valid_email(email):
+            error4 = "Please enter a valid email address."
+
+        main_content = generic_form(username, password, verify, email, error1, error2, error3, error4)
         content = (header + main_content + footer)
         self.response.write(content) #print filled out form and any errors to the page
 
