@@ -77,27 +77,43 @@ class MainHandler(webapp2.RequestHandler):
         error2 = ""
         error3 = ""
         error4 = ""
+        error_count = 0
 
         if not valid_username(username):
             error1 = "Please enter a valid username."
+            error_count += 1
 
         if not valid_password(password):
             error2 = "Please enter a valid password."
+            error_count += 1
 
         if password != verify:
             error3 = "Passwords do not match."
+            error_count += 1
 
         if not valid_email(email):
             error4 = "Please enter a valid email address."
+            error_count += 1
 
         main_content = generic_form(username, password, verify, email, error1, error2, error3, error4)
         content = (header + main_content + footer)
-        self.response.write(content) #print filled out form and any errors to the page
+        if error_count == 0:
+            self.redirect("/welcome?username=" + username)     #If no errors, then redirect to welcome page
+
+        else:
+            self.response.write(content) #print filled out form and any errors to the page
 
 
 class Welcome(webapp2.RequestHandler):
     """Merely prints welcome message"""
-    #def post(self):
+
+    def get(self):
+        username = self.request.get('username')
+        welcome_message = """
+        <h1>Success!</h1>
+        <h2>Welcome, {0}</h2>
+        """.format(username)
+        self.response.write(welcome_message)
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
