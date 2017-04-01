@@ -20,14 +20,14 @@ header = """
 def generic_form(username, password, verify, email, error1, error2, error3, error4):
     form = """
     <form action='/' method='post'>
-        <label>Username: <input type='text' name='username' value='{0}'/></label>
-        <p class=error>{4}</p>
-        <label>Password: <input type='password' name='password' value='{1}'/></label>
-        <p class=error>{5}</p>
-        <label>Confrim Password: <input type='password' name='verify' value='{2}'/></label>
-        <p class=error>{6}</p>
-        <label>Email (optional): <input type='text' name='email' value='{3}'/></label>
-        <p class=error>{7}</p>
+        <label>Username: <input type='text' name='username' value='{0}'/></label><span class=error>{4}</span>
+        <br>
+        <label>Password: <input type='password' name='password' value='{1}'/></label><span class=error>{5}</span>
+        <br>
+        <label>Confrim Password: <input type='password' name='verify' value='{2}'/></label><span class=error>{6}</span>
+        <br>
+        <label>Email (optional): <input type='text' name='email' value='{3}'/></label><span class=error>{7}</span>
+        <br>
         <input type="submit" value="Submit"/>
     </form>
     """.format(username, password, verify, email, error1, error2, error3, error4)
